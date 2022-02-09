@@ -28,7 +28,7 @@ import com.alibaba.nacos.api.utils.StringUtils;
  * @since 1.0.0
  */
 public class NamingUtils {
-    
+
     /**
      * Returns a combined string with serviceName and groupName. serviceName can not be nil.
      *
@@ -50,9 +50,11 @@ public class NamingUtils {
             throw new IllegalArgumentException("Param 'groupName' is illegal, groupName is blank");
         }
         final String resultGroupedName = groupName + Constants.SERVICE_INFO_SPLITER + serviceName;
+        // intern() : 首先检查字符串池中是否有resultGroupedName这个字符串，如果存在则返回这个字符串的引用，
+        // 否则就将这个字符串添加到字符串池中，然会返回这个字符串的引用。
         return resultGroupedName.intern();
     }
-    
+
     public static String getServiceName(final String serviceNameWithGroup) {
         if (StringUtils.isBlank(serviceNameWithGroup)) {
             return StringUtils.EMPTY;
@@ -62,7 +64,7 @@ public class NamingUtils {
         }
         return serviceNameWithGroup.split(Constants.SERVICE_INFO_SPLITER)[1];
     }
-    
+
     public static String getGroupName(final String serviceNameWithGroup) {
         if (StringUtils.isBlank(serviceNameWithGroup)) {
             return StringUtils.EMPTY;
@@ -72,7 +74,7 @@ public class NamingUtils {
         }
         return serviceNameWithGroup.split(Constants.SERVICE_INFO_SPLITER)[0];
     }
-    
+
     /**
      * check combineServiceName format. the serviceName can't be blank.
      * <pre>
@@ -94,7 +96,7 @@ public class NamingUtils {
             throw new IllegalArgumentException("Param 'serviceName' is illegal, groupName can't be empty");
         }
     }
-    
+
     /**
      * Returns a combined string with serviceName and groupName. Such as 'groupName@@serviceName'
      * <p>This method works similar with {@link com.alibaba.nacos.api.naming.utils.NamingUtils#getGroupedName} But not
@@ -111,7 +113,7 @@ public class NamingUtils {
     public static String getGroupedNameOptional(final String serviceName, final String groupName) {
         return groupName + Constants.SERVICE_INFO_SPLITER + serviceName;
     }
-    
+
     /**
      * <p>Check instance param about keep alive.</p>
      *
