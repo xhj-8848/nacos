@@ -212,7 +212,7 @@ public class NacosNamingService implements NamingService {
         // 拼接分组服务名：groupName + @@ + serviceName，例如：DEFAULT_GROUP@@nacos.test.3
         String groupedServiceName = NamingUtils.getGroupedName(serviceName, groupName);
 
-        // 默认都是临时节点，非临时节点不会检测心跳，会直接持久化到表中，不会移除服务信息
+        // 默认都是临时节点，非临时节点不会上报心跳，由server端主动探测健康状态
         if (instance.isEphemeral()) {
             // 心跳信息的服务名为分组服务名--groupedServiceName
             BeatInfo beatInfo = beatReactor.buildBeatInfo(groupedServiceName, instance);

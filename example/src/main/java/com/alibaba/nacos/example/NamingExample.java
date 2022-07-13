@@ -23,6 +23,7 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.AbstractEventListener;
 import com.alibaba.nacos.api.naming.listener.Event;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -49,6 +50,15 @@ public class NamingExample {
         NamingService naming = NamingFactory.createNamingService(properties);
 
         // 手动注册服务
+        Instance instance = new Instance();
+        instance.setServiceName("nacos-demo");
+        instance.setInstanceId("nacos-demo-1");
+        instance.setIp("127.0.0.1");
+        instance.setPort(9999);
+        instance.setClusterName("default");
+        instance.setEphemeral(false);
+        naming.registerInstance("nacos-demo", instance);
+
         naming.registerInstance("nacos.test.3", "11.11.11.11", 8888, "TEST1");
 
         naming.registerInstance("nacos.test.3", "2.2.2.2", 9999, "DEFAULT");
@@ -60,14 +70,14 @@ public class NamingExample {
         System.out.println(naming.getAllInstances("nacos.test.3"));
 
         Executor executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
-                new ThreadFactory() {
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        Thread thread = new Thread(r);
-                        thread.setName("test-thread");
-                        return thread;
-                    }
-                });
+            new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r);
+                    thread.setName("test-thread");
+                    return thread;
+                }
+            });
 
         naming.subscribe("nacos.test.3", new AbstractEventListener() {
 

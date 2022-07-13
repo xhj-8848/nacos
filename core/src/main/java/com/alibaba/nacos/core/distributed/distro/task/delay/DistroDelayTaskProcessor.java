@@ -30,17 +30,17 @@ import com.alibaba.nacos.core.distributed.distro.task.execute.DistroSyncChangeTa
  * @author xiweng.yy
  */
 public class DistroDelayTaskProcessor implements NacosTaskProcessor {
-    
+
     private final DistroTaskEngineHolder distroTaskEngineHolder;
-    
+
     private final DistroComponentHolder distroComponentHolder;
-    
+
     public DistroDelayTaskProcessor(DistroTaskEngineHolder distroTaskEngineHolder,
             DistroComponentHolder distroComponentHolder) {
         this.distroTaskEngineHolder = distroTaskEngineHolder;
         this.distroComponentHolder = distroComponentHolder;
     }
-    
+
     @Override
     public boolean process(NacosTask task) {
         if (!(task instanceof DistroDelayTask)) {
@@ -48,8 +48,10 @@ public class DistroDelayTaskProcessor implements NacosTaskProcessor {
         }
         DistroDelayTask distroDelayTask = (DistroDelayTask) task;
         DistroKey distroKey = distroDelayTask.getDistroKey();
+        // 发起临时一致性同步任务
         if (DataOperation.CHANGE.equals(distroDelayTask.getAction())) {
             DistroSyncChangeTask syncChangeTask = new DistroSyncChangeTask(distroKey, distroComponentHolder);
+            // 提交了一个DistroSyncChangeTask任务
             distroTaskEngineHolder.getExecuteWorkersManager().addTask(distroKey, syncChangeTask);
             return true;
         }

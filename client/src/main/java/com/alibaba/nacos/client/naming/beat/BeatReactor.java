@@ -83,7 +83,9 @@ public class BeatReactor implements Closeable {
         String key = buildKey(serviceName, beatInfo.getIp(), beatInfo.getPort());
         BeatInfo existBeat = null;
         //fix #1733
+        // 当具有相同 serviceName、ip 和端口的同一实例添加新的 beatInfo 时，停止现有的 beatInfo。
         if ((existBeat = dom2Beat.remove(key)) != null) {
+            // 移除后仍需修改stopped，才能停止心跳任务
             existBeat.setStopped(true);
         }
         dom2Beat.put(key, beatInfo);
@@ -172,6 +174,7 @@ public class BeatReactor implements Closeable {
                     lightBeatEnabled = result.get(CommonParams.LIGHT_BEAT_ENABLED).asBoolean();
                 }
                 BeatReactor.this.lightBeatEnabled = lightBeatEnabled;
+                // server如果有设置心跳间隔，以server为主
                 if (interval > 0) {
                     nextTime = interval;
                 }
@@ -191,7 +194,7 @@ public class BeatReactor implements Closeable {
                     instance.setEphemeral(true);
                     try {
                         serverProxy.registerService(beatInfo.getServiceName(),
-                                NamingUtils.getGroupName(beatInfo.getServiceName()), instance);
+                            NamingUtils.getGroupName(beatInfo.getServiceName()), instance);
                     } catch (Exception ignore) {
                     }
                 }
